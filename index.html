@@ -125,11 +125,11 @@
       <button class="nav-link" data-view="plan">
         <span class="nav-icon">📝</span> Plan workout
       </button>
+      <button class="nav-link" data-view="history">
+        <span class="nav-icon">🗂️</span> History
+      </button>
       <button class="nav-link" data-view="bests">
         <span class="nav-icon">🏅</span> Personal bests
-      </button>
-      <button class="nav-link" data-view="calendar">
-        <span class="nav-icon">📅</span> Calendar
       </button>
       <button class="nav-link" data-view="journal">
         <span class="nav-icon">📓</span> Workout journal
@@ -176,11 +176,108 @@
         <p id="dash-subline">Here's where your training stands.</p>
       </div>
 
+      <div class="tab-row" id="dash-section-tabs">
+        <button class="tab-btn active" data-section="calendar">Calendar</button>
+        <button class="tab-btn" data-section="monthly">Monthly progress</button>
+        <button class="tab-btn" data-section="overload">Progressive overload</button>
+      </div>
+
+      <!-- ---- Dashboard tab: Calendar ---- -->
+      <div id="dash-section-calendar" class="dash-section">
+        <div class="calendar-header">
+          <button id="cal-prev" class="icon-btn">‹</button>
+          <span id="cal-month-label">Month Year</span>
+          <button id="cal-next" class="icon-btn">›</button>
+        </div>
+
+        <div class="calendar-legend">
+          <span><i class="dot dot-green"></i> Trained</span>
+          <span><i class="dot dot-red"></i> Rest day</span>
+          <span><i class="dot dot-yellow"></i> Today</span>
+          <span><i class="dot dot-blue"></i> Planned</span>
+          <span>🎯 Goal due</span>
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        </div>
+        <div id="calendar-grid" class="calendar-grid"></div>
+
+        <div id="day-detail" class="day-detail hidden">
+          <h3 id="day-detail-title">Workouts on —</h3>
+          <div id="day-detail-rest-wrap" class="day-detail-rest-wrap hidden">
+            <button id="btn-toggle-rest-day" type="button" class="btn-ghost small"></button>
+          </div>
+          <div id="day-detail-list" class="day-detail-list"></div>
+        </div>
+      </div>
+
+      <!-- ---- Dashboard tab: Monthly progress ---- -->
+      <div id="dash-section-monthly" class="dash-section hidden">
+        <h2 class="section-heading" style="margin-top:0;">Monthly consistency</h2>
+        <div id="dash-monthly-bars" class="hbar-chart"></div>
+        <p class="meta-line" id="dash-best-month">—</p>
+
+        <div id="dash-extra-charts"></div>
+      </div>
+
+      <!-- ---- Dashboard tab: Progressive overload ---- -->
+      <div id="dash-section-overload" class="dash-section hidden">
+        <h2 class="section-heading" style="margin-top:0;">Progressive overload</h2>
+        <p class="meta-line" style="margin-top:-4px;">Tracks whether your lifts are trending up over time — not just that you showed up.</p>
+
+        <div class="field" id="overload-select-wrap">
+          <label for="overload-exercise-select">Exercise</label>
+          <select id="overload-exercise-select"></select>
+        </div>
+
+        <p class="empty-state hidden" id="overload-empty">Log a few lifting sessions with the same exercise to start tracking progressive overload.</p>
+
+        <div id="overload-content">
+          <div class="stat-grid">
+            <div class="stat-card accent-blue">
+              <span class="stat-label">Est. 1RM</span>
+              <span class="stat-value" id="overload-stat-1rm">0</span>
+              <span class="stat-unit" id="overload-stat-trend">—</span>
+            </div>
+            <div class="stat-card accent-green">
+              <span class="stat-label">Best set logged</span>
+              <span class="stat-value" id="overload-stat-best">—</span>
+              <span class="stat-unit">heaviest / hardest set</span>
+            </div>
+            <div class="stat-card accent-blue">
+              <span class="stat-label">Sessions logged</span>
+              <span class="stat-value" id="overload-stat-sessions">0</span>
+            </div>
+            <div class="stat-card accent-green">
+              <span class="stat-label">Overload streak</span>
+              <span class="stat-value" id="overload-stat-streak">0</span>
+              <span class="stat-unit">sessions without regression</span>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3 id="overload-chart-title">Estimated 1RM by session</h3>
+            <div class="sparkline-row" id="overload-chart"></div>
+          </div>
+
+          <h2 class="section-heading">Session history</h2>
+          <div id="overload-sessions-list" class="recent-list"></div>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Your stats</h2>
+      <div class="tab-row" id="dash-stat-tabs">
+        <button class="tab-btn active" data-range="alltime">All-time</button>
+        <button class="tab-btn" data-range="month">This month</button>
+        <button class="tab-btn" data-range="year">This year</button>
+      </div>
+
       <div class="stat-grid">
         <div class="stat-card accent-blue">
-          <span class="stat-label">Total workouts</span>
+          <span class="stat-label" id="stat-total-workouts-label">Total days</span>
           <span class="stat-value" id="stat-total-workouts">0</span>
-          <span class="stat-unit">logged all-time</span>
+          <span class="stat-unit" id="stat-total-workouts-unit">days with a workout</span>
         </div>
         <div class="stat-card accent-green">
           <span class="stat-label">Current streak</span>
@@ -254,6 +351,11 @@
       <h1 class="view-title">Log a workout</h1>
       <p class="view-sub">Choose an activity and fill in the details.</p>
 
+      <div id="log-rest-day-banner" class="rest-day-banner">
+        <span id="log-rest-day-text">Not training today?</span>
+        <button type="button" id="btn-quick-rest-day" class="btn-ghost small"></button>
+      </div>
+
       <div class="field">
         <label for="log-date">Date</label>
         <input id="log-date" type="date" />
@@ -262,12 +364,11 @@
       <div class="field">
         <label for="log-type">Exercise</label>
         <select id="log-type">
-          <option value="">Select an exercise…</option>
+          <option value="lifting">Lifting</option>
           <option value="running">Running</option>
           <option value="walking">Walking</option>
           <option value="swimming">Swimming</option>
           <option value="biking">Biking</option>
-          <option value="lifting">Lifting</option>
           <option value="yoga">Yoga</option>
           <option value="hiit">HIIT</option>
           <option value="sports">Sports</option>
@@ -288,48 +389,11 @@
         </div>
       </div>
 
-      <!-- Lifting fields -->
-      <div id="fields-lifting" class="dynamic-fields hidden">
-        <div class="field">
-          <label for="log-exercise-name">Exercise name</label>
-          <input id="log-exercise-name" type="text" placeholder="e.g. Bench press" />
-        </div>
-        <div class="field">
-          <label for="log-muscle-group">Muscle group</label>
-          <select id="log-muscle-group">
-            <option value="">Select a muscle group…</option>
-            <option value="chest">Chest</option>
-            <option value="back">Back</option>
-            <option value="shoulders">Shoulders</option>
-            <option value="biceps">Biceps</option>
-            <option value="triceps">Triceps</option>
-            <option value="legs">Legs</option>
-            <option value="glutes">Glutes</option>
-            <option value="core">Core</option>
-            <option value="full-body">Full body</option>
-          </select>
-        </div>
-
-        <label class="checkbox-row">
-          <input id="log-bodyweight" type="checkbox" />
-          <span>Bodyweight exercise (e.g. pull-ups, push-ups)</span>
-        </label>
-
-        <div class="field" id="field-weight-wrap">
-          <label for="log-weight">Weight (lbs)</label>
-          <input id="log-weight" type="text" inputmode="decimal" placeholder="e.g. 135" />
-        </div>
-
-        <div class="field-row">
-          <div class="field">
-            <label for="log-reps">Reps</label>
-            <input id="log-reps" type="text" inputmode="numeric" placeholder="e.g. 10" />
-          </div>
-          <div class="field">
-            <label for="log-sets">Sets</label>
-            <input id="log-sets" type="text" inputmode="numeric" placeholder="e.g. 3" />
-          </div>
-        </div>
+      <!-- Lifting fields: multi-exercise session, like plan workout -->
+      <div id="fields-lifting" class="dynamic-fields">
+        <p class="meta-line">Add every exercise for this session. Save it to finish later, or complete it now.</p>
+        <div id="log-exercise-list" class="plan-exercise-list"></div>
+        <button type="button" id="btn-add-log-exercise" class="btn-ghost">+ Add exercise</button>
       </div>
 
       <!-- Generic duration-based fields (yoga, hiit, sports) -->
@@ -346,8 +410,15 @@
 
       <span class="err" id="err-log"></span>
 
-      <button id="btn-log-workout" class="btn btn-primary btn-block">Log workout</button>
+      <div id="log-lifting-actions" class="btn-pair">
+        <button id="btn-save-log-draft" class="btn btn-secondary btn-block">Save for later</button>
+        <button id="btn-log-workout" class="btn btn-primary btn-block">Complete workout</button>
       </div>
+      <button id="btn-log-workout-simple" class="btn btn-primary btn-block hidden">Log workout</button>
+      </div>
+
+      <h2 class="section-heading hidden" id="log-drafts-heading">Saved &amp; not yet completed</h2>
+      <div id="log-drafts-list"></div>
     </section>
 
     <!-- ---------------- PLAN WORKOUT VIEW ---------------- -->
@@ -409,6 +480,21 @@
         </div>
       </div>
 
+      <div class="field">
+        <label for="plan-repeat">Repeat</label>
+        <select id="plan-repeat">
+          <option value="none">Doesn't repeat</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="biweekly">Every 2 weeks</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div id="plan-repeat-end-wrap" class="field hidden">
+        <label for="plan-repeat-end">Repeat until</label>
+        <input id="plan-repeat-end" type="date" />
+      </div>
+
       <label class="checkbox-row">
         <input id="plan-save-favorite" type="checkbox" />
         <span>Also save as a favorite template</span>
@@ -427,6 +513,26 @@
       <div id="planned-list">
         <p class="empty-state">Nothing planned yet.</p>
       </div>
+    </section>
+
+    <!-- ---------------- HISTORY VIEW ---------------- -->
+    <section id="view-history" class="view hidden">
+      <h1 class="view-title">History</h1>
+      <p class="view-sub">Every workout you've logged. Edit or delete any entry.</p>
+
+      <div class="chip-row" id="history-chip-row">
+        <button class="chip active" data-type="all">All</button>
+        <button class="chip" data-type="lifting">Lifting</button>
+        <button class="chip" data-type="running">Running</button>
+        <button class="chip" data-type="walking">Walking</button>
+        <button class="chip" data-type="swimming">Swimming</button>
+        <button class="chip" data-type="biking">Biking</button>
+        <button class="chip" data-type="yoga">Yoga</button>
+        <button class="chip" data-type="hiit">HIIT</button>
+        <button class="chip" data-type="sports">Sports</button>
+      </div>
+
+      <div id="history-list" class="recent-list"></div>
     </section>
 
     <!-- ---------------- PERSONAL BESTS VIEW ---------------- -->
@@ -450,34 +556,6 @@
       </div>
 
       <div id="bests-content"></div>
-    </section>
-
-    <!-- ---------------- CALENDAR VIEW ---------------- -->
-    <section id="view-calendar" class="view hidden">
-      <h1 class="view-title">Calendar</h1>
-      <div class="calendar-header">
-        <button id="cal-prev" class="icon-btn">‹</button>
-        <span id="cal-month-label">Month Year</span>
-        <button id="cal-next" class="icon-btn">›</button>
-      </div>
-
-      <div class="calendar-legend">
-        <span><i class="dot dot-green"></i> Trained</span>
-        <span><i class="dot dot-red"></i> Rest day</span>
-        <span><i class="dot dot-yellow"></i> Today</span>
-        <span><i class="dot dot-blue"></i> Planned</span>
-        <span>🎯 Goal due</span>
-      </div>
-
-      <div class="calendar-weekdays">
-        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-      </div>
-      <div id="calendar-grid" class="calendar-grid"></div>
-
-      <div id="day-detail" class="day-detail hidden">
-        <h3 id="day-detail-title">Workouts on —</h3>
-        <div id="day-detail-list" class="day-detail-list"></div>
-      </div>
     </section>
 
     <!-- ---------------- WORKOUT JOURNAL VIEW ---------------- -->
@@ -537,6 +615,13 @@
           <select id="goal-distance-metric">
             <option value="distance">Distance</option>
             <option value="time">Time</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="goal-distance-mode">Goal mode</label>
+          <select id="goal-distance-mode">
+            <option value="single">Single workout — best effort</option>
+            <option value="total">Total accumulated — e.g. 100 miles by a date</option>
           </select>
         </div>
         <div class="field">
