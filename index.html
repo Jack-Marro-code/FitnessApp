@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="FitnessTracker" />
+<meta name="theme-color" content="#080B10" />
+<title>FitnessTracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============ ONBOARDING: CREATE PROFILE ============ -->
+<section id="screen-onboarding" class="screen hidden">
+  <div class="onboarding-wrap">
+    <div class="brand-mark">
+      <svg class="pulse-logo" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 18H8L11 8L17 28L21 14L24 18H32" stroke="url(#pulseGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="pulseGrad" x1="2" y1="18" x2="32" y2="18" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#42E8B4"/>
+            <stop offset="1" stop-color="#4D9FFF"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span>FitnessTracker</span>
+    </div>
+
+    <h1 class="onboarding-title">Let's set up your profile</h1>
+    <p class="onboarding-sub">A few details so we can track your work accurately.</p>
+
+    <form id="profile-form" class="form" novalidate>
+      <div class="field">
+        <label for="in-name">Name</label>
+        <input id="in-name" name="name" type="text" placeholder="e.g. Jordan" autocomplete="off" />
+        <span class="err" id="err-name"></span>
+      </div>
+
+      <div class="field">
+        <label for="in-age">Age</label>
+        <input id="in-age" name="age" type="text" inputmode="numeric" placeholder="e.g. 27" />
+        <span class="err" id="err-age"></span>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="in-height-ft">Height — feet</label>
+          <input id="in-height-ft" name="heightFeet" type="text" inputmode="numeric" placeholder="5" />
+        </div>
+        <div class="field">
+          <label for="in-height-in">Height — inches</label>
+          <input id="in-height-in" name="heightInches" type="text" inputmode="numeric" placeholder="10" />
+        </div>
+      </div>
+      <span class="err" id="err-height"></span>
+
+      <div class="field">
+        <label for="in-weight">Weight (lbs)</label>
+        <input id="in-weight" name="weight" type="text" inputmode="numeric" placeholder="e.g. 165" />
+        <span class="err" id="err-weight"></span>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Create profile</button>
+    </form>
+  </div>
+</section>
+
+<!-- ============ WELCOME BACK (every entry) ============ -->
+<section id="screen-welcome" class="screen hidden">
+  <div class="welcome-wrap">
+    <div class="brand-mark">
+      <svg class="pulse-logo" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 18H8L11 8L17 28L21 14L24 18H32" stroke="url(#pulseGrad2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="pulseGrad2" x1="2" y1="18" x2="32" y2="18" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#42E8B4"/>
+            <stop offset="1" stop-color="#4D9FFF"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span>FitnessTracker</span>
+    </div>
+    <div class="welcome-ring">
+      <span id="welcome-initial">J</span>
+    </div>
+    <h1 class="welcome-title">Welcome back, <span id="welcome-name">there</span></h1>
+    <p class="welcome-sub">Ready to put in the work today?</p>
+    <button id="btn-begin-workout" class="btn btn-primary btn-block">Begin workout</button>
+  </div>
+</section>
+
+<!-- ============ MAIN APP SHELL ============ -->
+<div id="app-shell" class="app-shell hidden">
+
+  <!-- Sidebar -->
+  <nav id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-mark small">
+        <svg class="pulse-logo" width="26" height="26" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 18H8L11 8L17 28L21 14L24 18H32" stroke="url(#pulseGrad3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="pulseGrad3" x1="2" y1="18" x2="32" y2="18" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#42E8B4"/>
+              <stop offset="1" stop-color="#4D9FFF"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>FitnessTracker</span>
+      </div>
+      <button id="sidebar-close" class="icon-btn" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="sidebar-links">
+      <button class="nav-link active" data-view="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-link" data-view="log">
+        <span class="nav-icon">➕</span> Log workout
+      </button>
+      <button class="nav-link" data-view="plan">
+        <span class="nav-icon">📝</span> Plan workout
+      </button>
+      <button class="nav-link" data-view="bests">
+        <span class="nav-icon">🏅</span> Personal bests
+      </button>
+      <button class="nav-link" data-view="calendar">
+        <span class="nav-icon">📅</span> Calendar
+      </button>
+      <button class="nav-link" data-view="journal">
+        <span class="nav-icon">📓</span> Workout journal
+      </button>
+      <button class="nav-link" data-view="goals">
+        <span class="nav-icon">🎯</span> Fitness goals
+      </button>
+      <button class="nav-link" data-view="meals">
+        <span class="nav-icon">🍽️</span> Meal tracking
+      </button>
+      <button class="nav-link" data-view="profile">
+        <span class="nav-icon">👤</span> Profile
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <button id="sidebar-user" class="sidebar-user" type="button">
+        <div class="mini-ring priority"><span id="sidebar-initial">J</span></div>
+        <div class="sidebar-user-info">
+          <p id="sidebar-name">Jordan</p>
+          <span>View profile</span>
+        </div>
+      </button>
+    </div>
+  </nav>
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <button id="sidebar-open" class="icon-btn" aria-label="Open menu">☰</button>
+    <div class="topbar-title">
+      <span id="topbar-heading">Dashboard</span>
+    </div>
+    <div class="topbar-spacer"></div>
+  </header>
+
+  <!-- Main scroll area -->
+  <main class="main-content">
+
+    <!-- ---------------- DASHBOARD VIEW ---------------- -->
+    <section id="view-dashboard" class="view">
+      <div class="greeting-block">
+        <h1>Welcome, <span id="dash-name">Jordan</span></h1>
+        <p id="dash-subline">Here's where your training stands.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card accent-blue">
+          <span class="stat-label">Total workouts</span>
+          <span class="stat-value" id="stat-total-workouts">0</span>
+          <span class="stat-unit">logged all-time</span>
+        </div>
+        <div class="stat-card accent-green">
+          <span class="stat-label">Current streak</span>
+          <span class="stat-value" id="stat-streak">0</span>
+          <span class="stat-unit">days in a row</span>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Strength</h2>
+      <div class="stat-grid">
+        <div class="stat-card accent-blue wide">
+          <span class="stat-label">Total weight lifted</span>
+          <span class="stat-value" id="stat-weight-lifted">0<small>lbs</small></span>
+          <span class="stat-unit">weight × reps × sets, bodyweight excluded</span>
+        </div>
+        <div class="stat-card accent-green wide">
+          <span class="stat-label">Bodyweight sets</span>
+          <span class="stat-value" id="stat-bodyweight-sets">0</span>
+          <span class="stat-unit">total sets logged</span>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Distance</h2>
+      <div class="stat-grid">
+        <div class="stat-card accent-blue">
+          <span class="stat-label">Running</span>
+          <span class="stat-value" id="stat-running">0.0<small>mi</small></span>
+        </div>
+        <div class="stat-card accent-green">
+          <span class="stat-label">Walking</span>
+          <span class="stat-value" id="stat-walking">0.0<small>mi</small></span>
+        </div>
+        <div class="stat-card accent-blue">
+          <span class="stat-label">Swimming</span>
+          <span class="stat-value" id="stat-swimming">0.0<small>mi</small></span>
+        </div>
+        <div class="stat-card accent-green">
+          <span class="stat-label">Biking</span>
+          <span class="stat-value" id="stat-biking">0.0<small>mi</small></span>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Fitness goals</h2>
+      <div id="dash-goals-list" class="recent-list">
+        <p class="empty-state">No goals set yet. Head to <strong>Fitness goals</strong> to create one.</p>
+      </div>
+
+      <h2 class="section-heading">Upcoming workouts</h2>
+      <div id="dash-upcoming-list" class="recent-list">
+        <p class="empty-state">Nothing planned for the next 7 days.</p>
+      </div>
+
+      <h2 class="section-heading">Recent activity</h2>
+      <div id="recent-list" class="recent-list">
+        <p class="empty-state">No workouts logged yet. Head to <strong>Log workout</strong> to get started.</p>
+      </div>
+    </section>
+
+    <!-- ---------------- LOG WORKOUT VIEW ---------------- -->
+    <section id="view-log" class="view hidden">
+
+      <div id="log-success-overlay" class="success-overlay hidden">
+        <div class="check-circle">
+          <svg viewBox="0 0 24 24"><path d="M4 12.5L9.5 18L20 6"/></svg>
+        </div>
+        <h2 class="success-title">Workout logged!</h2>
+        <p class="success-sub" id="success-encouragement">Nice work — keep the momentum going.</p>
+      </div>
+
+      <div id="log-form-wrap">
+      <h1 class="view-title">Log a workout</h1>
+      <p class="view-sub">Choose an activity and fill in the details.</p>
+
+      <div class="field">
+        <label for="log-date">Date</label>
+        <input id="log-date" type="date" />
+      </div>
+
+      <div class="field">
+        <label for="log-type">Exercise</label>
+        <select id="log-type">
+          <option value="">Select an exercise…</option>
+          <option value="running">Running</option>
+          <option value="walking">Walking</option>
+          <option value="swimming">Swimming</option>
+          <option value="biking">Biking</option>
+          <option value="lifting">Lifting</option>
+          <option value="yoga">Yoga</option>
+          <option value="hiit">HIIT</option>
+          <option value="sports">Sports</option>
+        </select>
+      </div>
+
+      <!-- Distance-based fields -->
+      <div id="fields-distance" class="dynamic-fields hidden">
+        <div class="field-row">
+          <div class="field">
+            <label for="log-distance">Distance (mi)</label>
+            <input id="log-distance" type="text" inputmode="decimal" placeholder="e.g. 3.1" />
+          </div>
+          <div class="field">
+            <label for="log-time">Time (min)</label>
+            <input id="log-time" type="text" inputmode="numeric" placeholder="e.g. 28" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Lifting fields -->
+      <div id="fields-lifting" class="dynamic-fields hidden">
+        <div class="field">
+          <label for="log-exercise-name">Exercise name</label>
+          <input id="log-exercise-name" type="text" placeholder="e.g. Bench press" />
+        </div>
+        <div class="field">
+          <label for="log-muscle-group">Muscle group</label>
+          <select id="log-muscle-group">
+            <option value="">Select a muscle group…</option>
+            <option value="chest">Chest</option>
+            <option value="back">Back</option>
+            <option value="shoulders">Shoulders</option>
+            <option value="biceps">Biceps</option>
+            <option value="triceps">Triceps</option>
+            <option value="legs">Legs</option>
+            <option value="glutes">Glutes</option>
+            <option value="core">Core</option>
+            <option value="full-body">Full body</option>
+          </select>
+        </div>
+
+        <label class="checkbox-row">
+          <input id="log-bodyweight" type="checkbox" />
+          <span>Bodyweight exercise (e.g. pull-ups, push-ups)</span>
+        </label>
+
+        <div class="field" id="field-weight-wrap">
+          <label for="log-weight">Weight (lbs)</label>
+          <input id="log-weight" type="text" inputmode="decimal" placeholder="e.g. 135" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="log-reps">Reps</label>
+            <input id="log-reps" type="text" inputmode="numeric" placeholder="e.g. 10" />
+          </div>
+          <div class="field">
+            <label for="log-sets">Sets</label>
+            <input id="log-sets" type="text" inputmode="numeric" placeholder="e.g. 3" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Generic duration-based fields (yoga, hiit, sports) -->
+      <div id="fields-duration" class="dynamic-fields hidden">
+        <div class="field">
+          <label for="log-duration">Duration (min)</label>
+          <input id="log-duration" type="text" inputmode="numeric" placeholder="e.g. 45" />
+        </div>
+        <div class="field">
+          <label for="log-notes">Notes (optional)</label>
+          <input id="log-notes" type="text" placeholder="e.g. Vinyasa flow, pickup basketball…" />
+        </div>
+      </div>
+
+      <span class="err" id="err-log"></span>
+
+      <button id="btn-log-workout" class="btn btn-primary btn-block">Log workout</button>
+      </div>
+    </section>
+
+    <!-- ---------------- PLAN WORKOUT VIEW ---------------- -->
+    <section id="view-plan" class="view hidden">
+      <h1 class="view-title">Plan a workout</h1>
+      <p class="view-sub">Schedule a future session, or reuse a favorite.</p>
+
+      <div class="field">
+        <label for="plan-name">Plan name</label>
+        <input id="plan-name" type="text" placeholder="e.g. Chest day, 5 mile run" />
+      </div>
+
+      <div class="field">
+        <label for="plan-date">Date</label>
+        <input id="plan-date" type="date" />
+      </div>
+
+      <div class="field">
+        <label for="plan-type">Exercise</label>
+        <select id="plan-type">
+          <option value="">Select an exercise…</option>
+          <option value="running">Running</option>
+          <option value="walking">Walking</option>
+          <option value="swimming">Swimming</option>
+          <option value="biking">Biking</option>
+          <option value="lifting">Lifting</option>
+          <option value="yoga">Yoga</option>
+          <option value="hiit">HIIT</option>
+          <option value="sports">Sports</option>
+        </select>
+      </div>
+
+      <div id="plan-fields-distance" class="dynamic-fields hidden">
+        <div class="field-row">
+          <div class="field">
+            <label for="plan-distance">Target distance (mi)</label>
+            <input id="plan-distance" type="text" inputmode="decimal" placeholder="e.g. 5" />
+          </div>
+          <div class="field">
+            <label for="plan-time">Target time (min)</label>
+            <input id="plan-time" type="text" inputmode="numeric" placeholder="optional" />
+          </div>
+        </div>
+      </div>
+
+      <div id="plan-fields-lifting" class="dynamic-fields hidden">
+        <div id="plan-exercise-list" class="plan-exercise-list"></div>
+        <button type="button" id="btn-add-plan-exercise" class="btn-ghost">+ Add exercise</button>
+      </div>
+
+      <div id="plan-fields-duration" class="dynamic-fields hidden">
+        <div class="field">
+          <label for="plan-duration">Target duration (min)</label>
+          <input id="plan-duration" type="text" inputmode="numeric" placeholder="e.g. 45" />
+        </div>
+        <div class="field">
+          <label for="plan-notes">Notes (optional)</label>
+          <input id="plan-notes" type="text" placeholder="e.g. Vinyasa flow, pickup basketball…" />
+        </div>
+      </div>
+
+      <label class="checkbox-row">
+        <input id="plan-save-favorite" type="checkbox" />
+        <span>Also save as a favorite template</span>
+      </label>
+
+      <span class="err" id="err-plan"></span>
+      <button id="btn-save-plan" class="btn btn-primary btn-block">Save plan</button>
+      <p id="plan-success" class="success-msg hidden">Workout planned ✓</p>
+
+      <h2 class="section-heading">Favorites</h2>
+      <div id="favorites-list">
+        <p class="empty-state">No favorites saved yet.</p>
+      </div>
+
+      <h2 class="section-heading">Upcoming planned workouts</h2>
+      <div id="planned-list">
+        <p class="empty-state">Nothing planned yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------------- PERSONAL BESTS VIEW ---------------- -->
+    <section id="view-bests" class="view hidden">
+      <h1 class="view-title">Personal bests</h1>
+      <p class="view-sub">Your top marks across every activity.</p>
+
+      <div class="chip-row" id="bests-chip-row">
+        <button class="chip active" data-type="lifting">Lifting</button>
+        <button class="chip" data-type="running">Running</button>
+        <button class="chip" data-type="walking">Walking</button>
+        <button class="chip" data-type="swimming">Swimming</button>
+        <button class="chip" data-type="biking">Biking</button>
+        <button class="chip" data-type="yoga">Yoga</button>
+        <button class="chip" data-type="hiit">HIIT</button>
+        <button class="chip" data-type="sports">Sports</button>
+      </div>
+
+      <div class="search-wrap hidden" id="bests-search-wrap">
+        <input id="bests-search" type="text" placeholder="Search exercises…" />
+      </div>
+
+      <div id="bests-content"></div>
+    </section>
+
+    <!-- ---------------- CALENDAR VIEW ---------------- -->
+    <section id="view-calendar" class="view hidden">
+      <h1 class="view-title">Calendar</h1>
+      <div class="calendar-header">
+        <button id="cal-prev" class="icon-btn">‹</button>
+        <span id="cal-month-label">Month Year</span>
+        <button id="cal-next" class="icon-btn">›</button>
+      </div>
+
+      <div class="calendar-legend">
+        <span><i class="dot dot-green"></i> Trained</span>
+        <span><i class="dot dot-red"></i> Rest day</span>
+        <span><i class="dot dot-yellow"></i> Today</span>
+        <span><i class="dot dot-blue"></i> Planned</span>
+        <span>🎯 Goal due</span>
+      </div>
+
+      <div class="calendar-weekdays">
+        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+      </div>
+      <div id="calendar-grid" class="calendar-grid"></div>
+
+      <div id="day-detail" class="day-detail hidden">
+        <h3 id="day-detail-title">Workouts on —</h3>
+        <div id="day-detail-list" class="day-detail-list"></div>
+      </div>
+    </section>
+
+    <!-- ---------------- WORKOUT JOURNAL VIEW ---------------- -->
+    <section id="view-journal" class="view hidden">
+      <h1 class="view-title">Workout journal</h1>
+      <p class="view-sub">Jot down notes and findings from your training.</p>
+
+      <div class="journal-nav">
+        <button id="journal-prev" class="icon-btn">‹</button>
+        <span id="journal-date-label">Today</span>
+        <button id="journal-next" class="icon-btn">›</button>
+      </div>
+
+      <div class="journal-page">
+        <textarea id="journal-textarea" placeholder="How did today's training go? Anything you noticed about form, energy, soreness, or progress…"></textarea>
+      </div>
+      <p class="journal-lock-note" id="journal-lock-note"></p>
+      <p class="journal-save-note" id="journal-save-note"></p>
+    </section>
+
+    <!-- ---------------- FITNESS GOALS VIEW ---------------- -->
+    <section id="view-goals" class="view hidden">
+
+      <div id="goal-success-overlay" class="success-overlay hidden">
+        <div class="check-circle">
+          <svg viewBox="0 0 24 24"><path d="M4 12.5L9.5 18L20 6"/></svg>
+        </div>
+        <h2 class="success-title">Goal set!</h2>
+        <p class="success-sub">You're on the clock — go get it.</p>
+      </div>
+
+      <div id="goal-form-wrap">
+      <h1 class="view-title">Fitness goals</h1>
+      <p class="view-sub">Set a target and track your progress toward it.</p>
+
+      <div class="field">
+        <label for="goal-type">Goal type</label>
+        <select id="goal-type">
+          <option value="distance">Cardio (distance or time)</option>
+          <option value="weight">Lifting (weight or reps)</option>
+          <option value="frequency">Workout frequency</option>
+        </select>
+      </div>
+
+      <div id="goal-fields-distance" class="dynamic-fields">
+        <div class="field">
+          <label for="goal-activity">Activity</label>
+          <select id="goal-activity">
+            <option value="running">Running</option>
+            <option value="walking">Walking</option>
+            <option value="swimming">Swimming</option>
+            <option value="biking">Biking</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="goal-distance-metric">Track by</label>
+          <select id="goal-distance-metric">
+            <option value="distance">Distance</option>
+            <option value="time">Time</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="goal-distance-target" id="goal-distance-target-label">Target distance (mi)</label>
+          <input id="goal-distance-target" type="text" inputmode="decimal" placeholder="e.g. 5" />
+        </div>
+      </div>
+
+      <div id="goal-fields-weight" class="dynamic-fields hidden">
+        <div class="field">
+          <label for="goal-exercise-name">Exercise name</label>
+          <input id="goal-exercise-name" type="text" list="known-exercises" placeholder="e.g. Bench press" />
+          <datalist id="known-exercises"></datalist>
+        </div>
+        <div class="field">
+          <label for="goal-weight-metric">Track by</label>
+          <select id="goal-weight-metric">
+            <option value="weight">Weight</option>
+            <option value="reps">Reps</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="goal-weight-target" id="goal-weight-target-label">Target weight (lbs)</label>
+          <input id="goal-weight-target" type="text" inputmode="decimal" placeholder="e.g. 200" />
+        </div>
+      </div>
+
+      <div id="goal-fields-frequency" class="dynamic-fields hidden">
+        <div class="field">
+          <label for="goal-frequency-target">Target workout count</label>
+          <input id="goal-frequency-target" type="text" inputmode="numeric" placeholder="e.g. 12" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="goal-date">Target date</label>
+        <input id="goal-date" type="date" />
+      </div>
+
+      <span class="err" id="err-goal"></span>
+      <button id="btn-save-goal" class="btn btn-primary btn-block">Set goal</button>
+
+      <h2 class="section-heading">Active</h2>
+      <div id="goals-active-list"><p class="empty-state">No active goals.</p></div>
+
+      <h2 class="section-heading">Achieved</h2>
+      <div id="goals-achieved-list"><p class="empty-state">No goals achieved yet — keep going.</p></div>
+
+      <h2 class="section-heading">Expired &amp; cancelled</h2>
+      <div id="goals-inactive-list"><p class="empty-state">Nothing here.</p></div>
+      </div>
+    </section>
+
+    <!-- ---------------- MEAL TRACKING VIEW ---------------- -->
+    <section id="view-meals" class="view hidden">
+
+      <div id="meal-success-overlay" class="success-overlay hidden">
+        <div class="check-circle">
+          <svg viewBox="0 0 24 24"><path d="M4 12.5L9.5 18L20 6"/></svg>
+        </div>
+        <h2 class="success-title">Meal logged!</h2>
+        <p class="success-sub">Nice — one more entry in the books.</p>
+      </div>
+
+      <div id="meal-form-wrap">
+      <h1 class="view-title">Meal tracking</h1>
+      <p class="view-sub">Log what you ate and keep an eye on your macros.</p>
+
+      <div class="field">
+        <label for="meal-date">Date</label>
+        <input id="meal-date" type="date" />
+      </div>
+
+      <div class="field">
+        <label for="meal-type">Meal</label>
+        <select id="meal-type">
+          <option value="breakfast">Breakfast</option>
+          <option value="lunch">Lunch</option>
+          <option value="dinner">Dinner</option>
+          <option value="snack">Snack</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="meal-name">Meal name</label>
+        <input id="meal-name" type="text" placeholder="e.g. Grilled chicken bowl" />
+      </div>
+
+      <p class="meta-line">All macros below are optional.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="meal-calories">Calories</label>
+          <input id="meal-calories" type="text" inputmode="numeric" placeholder="e.g. 520" />
+        </div>
+        <div class="field">
+          <label for="meal-protein">Protein (g)</label>
+          <input id="meal-protein" type="text" inputmode="decimal" placeholder="e.g. 40" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="meal-carbs">Carbs (g)</label>
+          <input id="meal-carbs" type="text" inputmode="decimal" placeholder="e.g. 55" />
+        </div>
+        <div class="field">
+          <label for="meal-fat">Fat (g)</label>
+          <input id="meal-fat" type="text" inputmode="decimal" placeholder="e.g. 18" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="meal-sugar">Sugar (g)</label>
+          <input id="meal-sugar" type="text" inputmode="decimal" placeholder="e.g. 8" />
+        </div>
+        <div class="field">
+          <label for="meal-fiber">Fiber (g)</label>
+          <input id="meal-fiber" type="text" inputmode="decimal" placeholder="e.g. 6" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="meal-sodium">Sodium (mg)</label>
+          <input id="meal-sodium" type="text" inputmode="numeric" placeholder="e.g. 480" />
+        </div>
+        <div class="field">
+          <label for="meal-cholesterol">Cholesterol (mg)</label>
+          <input id="meal-cholesterol" type="text" inputmode="numeric" placeholder="e.g. 85" />
+        </div>
+      </div>
+
+      <span class="err" id="err-meal"></span>
+      <button id="btn-save-meal" class="btn btn-primary btn-block">Log meal</button>
+
+      <h2 class="section-heading">Today's totals</h2>
+      <div class="stat-grid">
+        <div class="stat-card accent-green">
+          <span class="stat-label">Calories</span>
+          <span class="stat-value" id="stat-meal-calories">0</span>
+        </div>
+        <div class="stat-card accent-blue">
+          <span class="stat-label">Protein</span>
+          <span class="stat-value" id="stat-meal-protein">0<small>g</small></span>
+        </div>
+        <div class="stat-card accent-green">
+          <span class="stat-label">Carbs</span>
+          <span class="stat-value" id="stat-meal-carbs">0<small>g</small></span>
+        </div>
+        <div class="stat-card accent-blue">
+          <span class="stat-label">Fat</span>
+          <span class="stat-value" id="stat-meal-fat">0<small>g</small></span>
+        </div>
+      </div>
+      <p class="meta-line" id="meal-secondary-totals" style="margin-top:10px;">Sugar 0g · Fiber 0g · Sodium 0mg · Cholesterol 0mg</p>
+
+      <h2 class="section-heading">Today's meals</h2>
+      <div id="todays-meals-list"><p class="empty-state">No meals logged today.</p></div>
+
+      <h2 class="section-heading">Browse by day</h2>
+      <div class="calendar-header">
+        <button id="meal-cal-prev" class="icon-btn">‹</button>
+        <span id="meal-cal-month-label">Month Year</span>
+        <button id="meal-cal-next" class="icon-btn">›</button>
+      </div>
+      <div class="calendar-weekdays">
+        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+      </div>
+      <div id="meal-calendar-grid" class="calendar-grid"></div>
+
+      <div id="meal-day-detail" class="day-detail hidden">
+        <h3 id="meal-day-detail-title">Meals on —</h3>
+        <p class="meta-line" id="meal-day-detail-totals"></p>
+        <div id="meal-day-detail-list" class="day-detail-list"></div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ---------------- PROFILE VIEW ---------------- -->
+    <section id="view-profile" class="view hidden">
+      <h1 class="view-title">Your profile</h1>
+      <p class="view-sub">Update your details any time.</p>
+
+      <form id="profile-edit-form" class="form" novalidate>
+        <div class="field">
+          <label for="ed-name">Name</label>
+          <input id="ed-name" type="text" />
+          <span class="err" id="err-ed-name"></span>
+        </div>
+        <div class="field">
+          <label for="ed-age">Age</label>
+          <input id="ed-age" type="text" inputmode="numeric" />
+          <span class="err" id="err-ed-age"></span>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="ed-height-ft">Height — feet</label>
+            <input id="ed-height-ft" type="text" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for="ed-height-in">Height — inches</label>
+            <input id="ed-height-in" type="text" inputmode="numeric" />
+          </div>
+        </div>
+        <span class="err" id="err-ed-height"></span>
+        <div class="field">
+          <label for="ed-weight">Weight (lbs)</label>
+          <input id="ed-weight" type="text" inputmode="numeric" />
+          <span class="err" id="err-ed-weight"></span>
+        </div>
+
+        <p class="meta-line">Member since <span id="ed-created">—</span></p>
+
+        <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+        <p id="profile-saved-msg" class="success-msg hidden">Profile updated ✓</p>
+      </form>
+    </section>
+
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
