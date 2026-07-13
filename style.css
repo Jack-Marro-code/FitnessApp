@@ -614,6 +614,10 @@ input[type="date"] { color-scheme: dark; }
 .cal-day.before-join { background: transparent; border-color: var(--border-soft); color: var(--text-tertiary); opacity: 0.45; }
 .cal-day.missed { color: var(--text-tertiary); }
 .cal-day.selected { outline: 2px solid var(--blue); outline-offset: 1px; }
+/* Today AND already trained/rested: keep the trained/rest color as the base
+   fill, and layer the "today" ring on top so both states read at once. */
+.cal-day.today.trained { background: var(--green-dim); border-color: rgba(53,224,168,0.35); color: var(--green); box-shadow: 0 0 0 1.5px var(--yellow) inset; }
+.cal-day.today.rest { background: var(--red-dim); border-color: rgba(239,90,90,0.3); color: var(--red); box-shadow: 0 0 0 1.5px var(--yellow) inset; }
 
 .day-detail {
   margin-top: 24px;
@@ -932,6 +936,10 @@ input[type="date"] { color-scheme: dark; }
   gap: 12px;
   margin-bottom: 10px;
 }
+.planned-item .fav-body { flex: 1; min-width: 0; }
+.planned-item .fav-title { font-size: 14.5px; font-weight: 600; color: var(--text-primary); margin: 0; }
+.planned-item .fav-meta { font-size: 12.5px; color: var(--text-tertiary); margin: 2px 0 0; }
+.planned-item.goal-due-item { border-left-color: var(--yellow); cursor: pointer; }
 
 /* =========================================================
    Calendar: planned + goal markers
@@ -1318,7 +1326,7 @@ input[type="date"] { color-scheme: dark; }
   gap: 8px;
   align-items: center;
 }
-.weight-set-row input { width: auto; flex: 1; }
+.weight-set-row input { width: auto; flex: 1 1 0; min-width: 0; }
 .weight-set-row .remove-set {
   background: transparent;
   border: none;
@@ -1349,7 +1357,7 @@ input[type="date"] { color-scheme: dark; }
   gap: 8px;
   align-items: center;
 }
-.dropset-row input { width: auto; flex: 1; }
+.dropset-row input { width: auto; flex: 1 1 0; min-width: 0; }
 .dropset-row .remove-set {
   background: transparent;
   border: none;
