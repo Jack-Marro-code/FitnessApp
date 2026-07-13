@@ -916,9 +916,7 @@
       planBase.distance = distance;
       planBase.timeMinutes = $("plan-time").value ? Number($("plan-time").value) : null;
     } else if (type === "lifting") {
-      const exercises = collectPlanExercises();
-      if (exercises.length === 0) { errEl.textContent = "Add at least one exercise with a name."; return; }
-      planBase.exercises = exercises;
+      planBase.exercises = collectPlanExercises();
     } else if (DURATION_TYPES.includes(type)) {
       const duration = Number($("plan-duration").value);
       if (!$("plan-duration").value || duration <= 0) { errEl.textContent = "Enter a target duration greater than 0."; return; }
@@ -1671,6 +1669,8 @@
         cell.classList.add("before-join");
       } else if (iso === todayStr) {
         cell.classList.add("today");
+        if (workoutDates.has(iso)) cell.classList.add("trained");
+        else if (restDays.has(iso)) cell.classList.add("rest");
       } else if (workoutDates.has(iso)) {
         cell.classList.add("trained");
       } else if (restDays.has(iso)) {
@@ -1714,9 +1714,10 @@
     const dayWorkouts = workouts.filter((w) => w.date === iso);
     renderRestDayToggle(iso, dayWorkouts.length > 0);
     const dayPlans = plansStore.get().filter((p) => p.date === iso);
+    const dayGoals = goalsStore.get().filter((g) => !g.achieved && !g.cancelled && g.targetDate === iso);
     const listEl = $("day-detail-list");
 
-    if (dayWorkouts.length === 0 && dayPlans.length === 0) {
+    if (dayWorkouts.length === 0 && dayPlans.length === 0 && dayGoals.length === 0) {
       listEl.innerHTML = '<p class="empty-state">No workouts logged for this day.</p>';
       return;
     }
@@ -1728,9 +1729,22 @@
         <p class="fav-meta">${escapeHTML(planSummaryMeta(p))}</p>
       </div>
     </div>`).join("");
+    html += dayGoals.map((g) => {
+      const p = computeGoalProgress(g, workouts);
+      return `<div class="planned-item goal-due-item" data-goal-id="${g.id}">
+        <div class="recent-icon blue">🎯</div>
+        <div class="fav-body">
+          <p class="fav-title">${escapeHTML(goalTitle(g))} <span style="color:var(--yellow); font-size:11px;">GOAL DUE</span></p>
+          <p class="fav-meta">${Math.round(p.pct * 100)}% there</p>
+        </div>
+      </div>`;
+    }).join("");
     listEl.innerHTML = html;
     listEl.querySelectorAll(".recent-item.clickable").forEach((row) => {
       row.addEventListener("click", () => goToView("history"));
+    });
+    listEl.querySelectorAll(".goal-due-item").forEach((row) => {
+      row.addEventListener("click", () => goToView("goals"));
     });
   }
 
